@@ -2,130 +2,177 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Кристина и капибары</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Кристина и капибары в пустыне</title>
 <style>
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
   body {
     margin: 0; min-height: 100vh; display: grid; place-items: center;
-    background: linear-gradient(#f5d9b3 0 35%, #d4b07a 35% 100%);
-    font-family: Arial, sans-serif; color:#3d2b1a; overflow:hidden;
+    background: #e8d5b5;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    overflow: hidden;
+    touch-action: none;
   }
-  #gameWrap { width:min(100vw, 960px); padding:14px; position:relative; }
+  #gameWrap {
+    width: min(100vw, 960px);
+    padding: 10px;
+    position: relative;
+  }
   #topbar {
-    display:flex; gap:12px; justify-content:space-between; align-items:center;
-    background:rgba(255,248,235,.9); border-radius:18px; padding:12px 18px;
-    box-shadow:0 8px 25px rgba(0,0,0,.14); margin-bottom:10px; flex-wrap:wrap;
-    border:2px solid #d4b07a;
+    display: flex; gap: 10px; justify-content: space-between; align-items: center;
+    background: rgba(255, 245, 225, 0.92);
+    border-radius: 18px;
+    padding: 10px 18px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    backdrop-filter: blur(4px);
   }
-  #title { font-weight:900; font-size:20px; color:#5a3d1a; }
-  .stat { font-weight:800; color:#5a3d1a; background:rgba(255,235,200,0.6); padding:2px 14px; border-radius:30px; }
+  #title { font-weight: 900; font-size: 20px; color: #5a3e2b; }
+  .stat { font-weight: 700; color: #5a3e2b; font-size: 15px; }
   canvas {
-    width:100%; aspect-ratio: 16/10; display:block; border-radius:22px;
-    box-shadow:0 18px 50px rgba(0,0,0,.25); background:#d4b07a;
-    touch-action:none;
-    cursor: none;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    display: block;
+    border-radius: 22px;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.3);
+    background: #f5e6c8;
+    touch-action: none;
+    cursor: grab;
   }
-  #hint { text-align:center; color:#4a301a; text-shadow:0 2px 8px rgba(255,235,180,0.5); margin:10px 0 0; font-weight:600; }
+  #hint {
+    text-align: center;
+    color: #4a3520;
+    margin: 10px 0 0;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(255,215,140,0.6);
+    font-size: 14px;
+  }
   #modal {
-    position:fixed; inset:0; display:grid; place-items:center; background:rgba(30,20,10,.55);
-    backdrop-filter:blur(3px);
-    z-index:30;
+    position: fixed; inset: 0; display: grid; place-items: center;
+    background: rgba(40, 30, 20, 0.6);
+    backdrop-filter: blur(6px);
+    z-index: 20;
   }
   #card {
-    width:min(92vw,420px); background:#fef6e8; border-radius:24px; padding:26px;
-    text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.4);
-    border:3px solid #d4b07a;
+    width: min(92vw, 400px);
+    background: #fffaf0;
+    border-radius: 32px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    border: 2px solid #dbbd9a;
   }
-  #example { font-size:46px; font-weight:900; margin:14px 0; color:#4a301a; }
+  #example { font-size: 48px; font-weight: 900; margin: 16px 0; color: #3d2b1a; }
   #answer {
-    width:100%; font-size:30px; text-align:center; padding:12px;
-    border:3px solid #d4b07a; border-radius:14px; outline:none;
-    background:#fffcf2;
+    width: 100%; font-size: 32px; text-align: center; padding: 12px;
+    border: 3px solid #c4a27a; border-radius: 16px; outline: none;
+    background: #fffdf8;
+    font-weight: 700;
+    color: #2f1f0e;
   }
   #check {
-    margin-top:14px; width:100%; padding:14px; border:0; border-radius:14px;
-    background:#8B6B4A; color:#fff; font-size:18px; font-weight:800; cursor:pointer;
-    transition:0.1s;
+    margin-top: 16px; width: 100%; padding: 16px; border: 0; border-radius: 16px;
+    background: #7b5f42; color: #fff; font-size: 20px; font-weight: 800;
+    cursor: pointer; transition: 0.15s;
+    box-shadow: 0 4px 0 #4d3824;
   }
-  #check:active { transform:scale(0.96); background:#6d4f33; }
-  #message { min-height:24px; margin-top:10px; font-weight:800; }
-  .hidden { display:none !important; }
+  #check:active { transform: translateY(3px); box-shadow: 0 1px 0 #4d3824; }
+  #message { min-height: 28px; margin-top: 12px; font-weight: 700; font-size: 18px; }
+  .hidden { display: none !important; }
 
-  #touchControls {
-    display:none;
-    margin:12px auto 0;
-    width:180px;
-    user-select:none;
-    -webkit-user-select:none;
+  #levelScreen .screenCard {
+    background: #fcf3e4;
+    border-radius: 32px;
+    padding: 30px 24px;
+    text-align: center;
+    box-shadow: 0 16px 50px rgba(0,0,0,0.25);
+    border: 2px solid #dbbd9a;
   }
-  #touchControls button {
-    width:56px;
-    height:48px;
-    margin:2px;
-    border:0;
-    border-radius:14px;
-    background:rgba(255,248,235,.9);
-    color:#5a3d1a;
-    font-size:22px;
-    font-weight:900;
-    box-shadow:0 4px 12px rgba(0,0,0,.18);
-    touch-action:none;
-    border:2px solid #d4b07a;
-  }
-  #touchControls button:active {
-    transform:scale(.94);
-    background:#f5e0c8;
-  }
-  .touchRow {
-    display:flex;
-    justify-content:center;
-  }
-  @media (max-width: 700px) {
-    body { overflow:auto; }
-    #gameWrap { padding:8px; }
-    #topbar { padding:10px 12px; border-radius:14px; gap:7px; }
-    #title { font-size:16px; width:100%; text-align:center; }
-    .stat { font-size:14px; }
-    #hint { font-size:13px; }
-    #touchControls { display:block; }
-    canvas { border-radius:16px; }
-  }
-
-  .screen {
-    position:fixed; inset:0; display:grid; place-items:center;
-    background:rgba(20,15,8,0.6); backdrop-filter:blur(4px);
-    z-index:20;
-  }
-  .screenCard {
-    background:#fef6e8; border-radius:40px; padding:40px 30px;
-    max-width:520px; width:min(92vw,520px);
-    text-align:center; box-shadow:0 30px 80px rgba(0,0,0,.5);
-    border:4px solid #d4b07a;
-  }
-  .screenCard h1 { margin:10px 0; color:#4a301a; }
-  .screenCard p { color:#6d4f33; font-size:18px; }
   #numberChoices {
-    display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:20px 0;
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+    margin-top: 20px;
   }
   #numberChoices button {
-    width:60px; height:60px; border:0; border-radius:50%;
-    background:#8B6B4A; color:#fff; font-size:24px; font-weight:800;
-    cursor:pointer; transition:0.1s; box-shadow:0 6px 0 #5a3d1a;
+    width: 52px; height: 52px; border: 0; border-radius: 16px;
+    background: #dbbd9a; color: #2f1f0e; font-size: 22px; font-weight: 800;
+    box-shadow: 0 4px 0 #a58669; transition: 0.1s;
+    touch-action: manipulation;
   }
-  #numberChoices button:active {
-    transform:translateY(4px); box-shadow:0 2px 0 #5a3d1a;
-  }
-  #numberChoices button:hover { background:#a8835a; }
+  #numberChoices button:active { transform: translateY(3px); box-shadow: 0 1px 0 #a58669; }
 
-  .danceCard { background:rgba(255,248,235,0.95); }
-  #nextLevel {
-    background:#f5d742; border:0; padding:14px 36px; border-radius:60px;
-    font-size:22px; font-weight:800; color:#4a301a; cursor:pointer;
-    box-shadow:0 6px 0 #b3972a; transition:0.08s;
-    margin-top:20px;
+  #danceScreen .screenCard {
+    background: #fcf3e4;
+    border-radius: 32px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 16px 50px rgba(0,0,0,0.25);
+    border: 2px solid #dbbd9a;
   }
-  #nextLevel:active { transform:translateY(4px); box-shadow:0 2px 0 #b3972a; }
+  #danceScene {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    font-size: 38px;
+    margin: 20px 0;
+    min-height: 100px;
+  }
+  .dancer { font-size: 56px; }
+  .capy { display: inline-block; animation: wobble 1.2s infinite alternate; }
+  .capy:nth-child(2) { animation-delay: 0.2s; }
+  .capy:nth-child(3) { animation-delay: 0.4s; }
+  .capy:nth-child(4) { animation-delay: 0.6s; }
+  .capy:nth-child(5) { animation-delay: 0.8s; }
+  .capy:nth-child(6) { animation-delay: 1.0s; }
+  .capy:nth-child(7) { animation-delay: 1.2s; }
+  @keyframes wobble {
+    0% { transform: translateY(0) rotate(-3deg); }
+    100% { transform: translateY(-12px) rotate(3deg); }
+  }
+  #nextLevel {
+    margin-top: 18px; padding: 14px 36px; border: 0; border-radius: 40px;
+    background: #7b5f42; color: #fff; font-size: 20px; font-weight: 800;
+    box-shadow: 0 4px 0 #4d3824; transition: 0.1s;
+    touch-action: manipulation;
+  }
+  #nextLevel:active { transform: translateY(3px); box-shadow: 0 1px 0 #4d3824; }
+
+  #touchControls {
+    display: none;
+    margin: 14px auto 0;
+    width: 200px;
+    touch-action: none;
+  }
+  #touchControls button {
+    width: 60px; height: 52px; margin: 3px; border: 0; border-radius: 16px;
+    background: rgba(255, 245, 225, 0.92);
+    color: #3d2b1a; font-size: 26px; font-weight: 900;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    touch-action: none;
+    backdrop-filter: blur(4px);
+    border: 1px solid #dbbd9a;
+  }
+  #touchControls button:active {
+    transform: scale(0.92);
+    background: #f0dec6;
+  }
+  .touchRow { display: flex; justify-content: center; }
+
+  @media (max-width: 700px) {
+    body { overflow: auto; }
+    #gameWrap { padding: 6px; }
+    #topbar { padding: 8px 12px; border-radius: 14px; gap: 5px; }
+    #title { font-size: 15px; width: 100%; text-align: center; }
+    .stat { font-size: 13px; }
+    #hint { font-size: 12px; }
+    #touchControls { display: block; }
+    canvas { border-radius: 14px; }
+    #card { padding: 20px 16px; }
+    #example { font-size: 38px; }
+    #answer { font-size: 28px; padding: 10px; }
+  }
 </style>
 </head>
 <body>
@@ -136,21 +183,31 @@
     <div class="stat">Уровень: <span id="level">—</span></div>
   </div>
 
-  <div id="levelScreen" class="screen">
+  <div id="levelScreen">
     <div class="screenCard">
-      <div style="font-size:48px">🐹🏜️🐹</div>
-      <h1>🌵 Кристина в пустыне!</h1>
-      <p>Выбери таблицу умножения, чтобы поймать 10 капибар 🐹</p>
+      <div style="font-size:48px;">🏜️🐹🏜️</div>
+      <h1 style="color:#4d3824;">Выбери таблицу</h1>
+      <p style="color:#5a3e2b;">Поймай 10 капибар, решая примеры!</p>
       <div id="numberChoices"></div>
     </div>
   </div>
 
   <canvas id="game" width="960" height="600"></canvas>
-  <div id="hint">🏜️ Подойди к капибаре и реши пример, чтобы поймать 🐹</div>
+  <div id="hint">🐹 Подойди к капибаре и поймай её сачком</div>
 
-  <div id="danceScreen" class="screen hidden">
-    <div class="screenCard danceCard">
-      <h1>🎉 Все капибары пойманы!</h1>
+  <div id="danceScreen" class="hidden">
+    <div class="screenCard">
+      <div id="danceScene">
+        <span class="dancer">👩🏻</span>
+        <span class="capy">🐹</span>
+        <span class="capy">🐹</span>
+        <span class="capy">🐹</span>
+        <span class="capy">🐹</span>
+        <span class="capy">🐹</span>
+        <span class="capy">🐹</span>
+      </div>
+      <h1 style="color:#4d3824;">🎉 Все капибары пойманы!</h1>
+      <p style="color:#5a3e2b;">Кристина танцует, а капибары водят хоровод!</p>
       <button id="nextLevel">Следующий уровень →</button>
     </div>
   </div>
@@ -167,8 +224,8 @@
 
 <div id="modal" class="hidden">
   <div id="card">
-    <div style="font-size:42px">🐹</div>
-    <div style="font-weight:800">Чтобы поймать капибару, реши пример:</div>
+    <div style="font-size:44px;">🐹</div>
+    <div style="font-weight:700; color:#4d3824;">Реши пример, чтобы поймать:</div>
     <div id="example"></div>
     <input id="answer" type="number" inputmode="numeric" autocomplete="off" placeholder="?" />
     <button id="check">Поймать!</button>
@@ -179,444 +236,473 @@
 <script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
+const W = 960, H = 600;
+const keys = {};
 let score = 0, activeFrog = null, question = null, caughtAnim = 0;
 let selectedTable = null;
-let frogs = [];
-let victory = false;
-let victoryTimer = 0;
-let playerX = W/2, playerY = H/2;
-let mouseX = W/2, mouseY = H/2;
-
+let capybaras = [];
+const player = { x: W * 0.48, y: H * 0.62, speed: 260, dir: 1 };
 document.getElementById('score').textContent = '0/10';
-document.getElementById('levelScreen').classList.remove('hidden');
 
-function spawnFrog(i=0) {
-  let x,y;
+function spawnCapybara(i = 0, multiplier = 1) {
+  let x, y;
   let attempts = 0;
   do {
-    x = 55 + Math.random()*(W-110);
-    y = 150 + Math.random()*(H-205);
+    x = 60 + Math.random() * (W - 120);
+    y = 140 + Math.random() * (H - 190);
     attempts++;
-  } while (Math.hypot(x-playerX,y-playerY)<150 && attempts<300);
-  return {x,y, phase:Math.random()*Math.PI*2, id:i};
+  } while (Math.hypot(x - player.x, y - player.y) < 160 && attempts < 50);
+  return { x, y, phase: Math.random() * Math.PI * 2, id: i, multiplier };
 }
 
 function startLevel(n) {
   selectedTable = n;
   score = 0;
-  victory = false;
-  victoryTimer = 0;
   document.getElementById('score').textContent = '0/10';
   document.getElementById('level').textContent = '×' + n;
-  playerX = W/2;
-  playerY = H/2;
-  frogs = Array.from({length:10}, (_,i)=>spawnFrog(i));
+  player.x = W * 0.48;
+  player.y = H * 0.62;
+  capybaras = Array.from({ length: 10 }, (_, i) => spawnCapybara(i, n));
   document.getElementById('levelScreen').classList.add('hidden');
+  document.getElementById('game').style.visibility = 'visible';
   document.getElementById('danceScreen').classList.add('hidden');
+  document.getElementById('modal').classList.add('hidden');
+  activeFrog = null;
 }
 
 function finishLevel() {
-  victory = true;
-  victoryTimer = 0;
+  document.getElementById('game').style.visibility = 'hidden';
   document.getElementById('danceScreen').classList.remove('hidden');
 }
 
-// === КАПИБАРА ===
-function drawFrog(f) {
-  const bob = Math.sin(performance.now()/250+f.phase)*3;
-  const x = f.x, y = f.y + bob;
-  ctx.save(); ctx.translate(x, y);
-  ctx.fillStyle='#8B6B4A';
-  ctx.beginPath(); ctx.ellipse(0,6,30,20,0,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#A8835A';
-  ctx.beginPath(); ctx.ellipse(-4,0,20,16,0,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#9B7A55';
-  ctx.beginPath(); ctx.arc(0,-6,18,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#B8946A';
-  ctx.beginPath(); ctx.arc(-2,-8,14,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#7A5D3F';
-  ctx.beginPath(); ctx.arc(-16,-12,6,0,Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(16,-12,6,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#A8835A';
-  ctx.beginPath(); ctx.arc(-16,-12,3.5,0,Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(16,-12,3.5,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#1a1a1a';
-  ctx.beginPath(); ctx.arc(-6,-8,2.5,0,Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(6,-8,2.5,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='white';
-  ctx.beginPath(); ctx.arc(-7,-9,1,0,Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(5,-9,1,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#4A3520';
-  ctx.beginPath(); ctx.arc(0,-3,3,0,Math.PI*2); ctx.fill();
-  ctx.strokeStyle='#4A3520';
-  ctx.lineWidth=1.5;
-  ctx.beginPath(); ctx.arc(0,0,4,0.1,Math.PI-0.1); ctx.stroke();
-  ctx.strokeStyle='#6A4F35';
-  ctx.lineWidth=1.2;
-  ctx.beginPath(); ctx.moveTo(-12,-4); ctx.lineTo(-24,-6); ctx.moveTo(-12,-2); ctx.lineTo(-24,-1); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(12,-4); ctx.lineTo(24,-6); ctx.moveTo(12,-2); ctx.lineTo(24,-1); ctx.stroke();
-  ctx.fillStyle='#8B6B4A';
-  ctx.beginPath(); ctx.ellipse(-18,14,5,4,0,0,Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.ellipse(18,14,5,4,0,0,Math.PI*2); ctx.fill();
+function roundRect(x, y, w, h, r, fill, stroke) {
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, r);
+  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1.5; ctx.stroke(); }
+}
+
+function drawDesert() {
+  // Небо
+  const grad = ctx.createLinearGradient(0, 0, 0, H * 0.5);
+  grad.addColorStop(0, '#f7d9aa');
+  grad.addColorStop(1, '#f5e6c8');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H * 0.55);
+
+  // Дюны
+  ctx.fillStyle = '#e2c9a8';
+  ctx.beginPath();
+  ctx.moveTo(0, H * 0.48);
+  for (let x = 0; x <= W; x += 60) {
+    ctx.quadraticCurveTo(x + 30, H * 0.38 + Math.sin(x * 0.02) * 30, x + 60, H * 0.48);
+  }
+  ctx.lineTo(W, H);
+  ctx.lineTo(0, H);
+  ctx.fill();
+
+  ctx.fillStyle = '#dbbd9a';
+  ctx.beginPath();
+  ctx.moveTo(0, H * 0.60);
+  for (let x = 0; x <= W; x += 50) {
+    ctx.quadraticCurveTo(x + 25, H * 0.52 + Math.sin(x * 0.025 + 2) * 25, x + 50, H * 0.60);
+  }
+  ctx.lineTo(W, H);
+  ctx.lineTo(0, H);
+  ctx.fill();
+
+  ctx.fillStyle = '#c9ae8a';
+  ctx.beginPath();
+  ctx.moveTo(0, H * 0.75);
+  for (let x = 0; x <= W; x += 70) {
+    ctx.quadraticCurveTo(x + 35, H * 0.68 + Math.sin(x * 0.018 + 4) * 20, x + 70, H * 0.75);
+  }
+  ctx.lineTo(W, H);
+  ctx.lineTo(0, H);
+  ctx.fill();
+
+  // Кактусы и кустики
+  for (let i = 0; i < 8; i++) {
+    let x = (i * 137 + 43) % W;
+    let y = H * 0.55 + (i * 73) % (H * 0.35);
+    ctx.fillStyle = '#7a9b6e';
+    ctx.beginPath();
+    ctx.arc(x, y, 6 + i % 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#8aaa7a';
+    ctx.beginPath();
+    ctx.arc(x + 8, y - 4, 5 + i % 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#6a8a5e';
+    ctx.beginPath();
+    ctx.arc(x - 6, y - 2, 4 + i % 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Камешки
+  for (let i = 0; i < 20; i++) {
+    let x = (i * 97 + 13) % W;
+    let y = H * 0.55 + (i * 53) % (H * 0.38);
+    ctx.fillStyle = ['#b8a080', '#c8b090', '#a89078'][i % 3];
+    ctx.beginPath();
+    ctx.ellipse(x, y, 5 + i % 4, 3 + i % 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Следы на песке
+  ctx.strokeStyle = 'rgba(160,130,100,0.2)';
+  ctx.lineWidth = 2;
+  for (let i = 0; i < 12; i++) {
+    let x = (i * 83 + 27) % W;
+    let y = H * 0.6 + (i * 47) % (H * 0.32);
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 1.5);
+    ctx.stroke();
+  }
+}
+
+function drawCapybara(c) {
+  const bob = Math.sin(performance.now() / 280 + c.phase) * 3;
+  const x = c.x, y = c.y + bob;
+  ctx.save();
+  ctx.translate(x, y);
+
+  // Тень
+  ctx.fillStyle = 'rgba(60,40,20,0.15)';
+  ctx.beginPath();
+  ctx.ellipse(0, 16, 22, 7, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Тело
+  ctx.fillStyle = '#8a7a5a';
+  ctx.beginPath();
+  ctx.ellipse(0, 2, 24, 14, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#9a8a6a';
+  ctx.beginPath();
+  ctx.ellipse(0, -2, 20, 12, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Голова
+  ctx.fillStyle = '#9a8a6a';
+  ctx.beginPath();
+  ctx.ellipse(0, -12, 14, 11, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Уши
+  ctx.fillStyle = '#8a7a5a';
+  ctx.beginPath();
+  ctx.ellipse(-9, -18, 4, 3, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(9, -18, 4, 3, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Глаза
+  ctx.fillStyle = '#1a1a1a';
+  ctx.beginPath();
+  ctx.arc(-5, -13, 2.2, 0, Math.PI * 2);
+  ctx.arc(5, -13, 2.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'white';
+  ctx.beginPath();
+  ctx.arc(-4.5, -14, 1, 0, Math.PI * 2);
+  ctx.arc(5.5, -14, 1, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Нос
+  ctx.fillStyle = '#5a4a3a';
+  ctx.beginPath();
+  ctx.ellipse(0, -8, 3, 2, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Улыбка
+  ctx.strokeStyle = '#4a3a2a';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(0, -6, 4, 0.1, Math.PI - 0.1);
+  ctx.stroke();
+
+  // Маленькие лапки
+  ctx.fillStyle = '#8a7a5a';
+  ctx.beginPath();
+  ctx.ellipse(-12, 8, 4, 3, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(12, 8, 4, 3, 0, 0, Math.PI * 2);
+  ctx.fill();
+
   ctx.restore();
 }
 
-// === НОВАЯ ПРОСТАЯ КРИСТИНА С БЕЛЫМ ЛИЦОМ ===
 function drawPlayer() {
+  const x = player.x, y = player.y;
   ctx.save();
-  ctx.translate(playerX, playerY);
+  ctx.translate(x, y);
 
-  // 1. ТЕНЬ
-  ctx.fillStyle='rgba(0,0,0,0.1)';
-  ctx.beginPath(); ctx.ellipse(0,48,30,8,0,0,Math.PI*2); ctx.fill();
-
-  // 2. НОГИ (БЕЛЫЕ)
-  ctx.strokeStyle='#FFFFFF';
-  ctx.lineWidth=12;
-  ctx.lineCap='round';
+  // Тень
+  ctx.fillStyle = 'rgba(60,40,20,0.2)';
   ctx.beginPath();
-  ctx.moveTo(-10, 28);
-  ctx.lineTo(-13, 44);
-  ctx.moveTo(10, 28);
-  ctx.lineTo(13, 44);
+  ctx.ellipse(0, 44, 26, 7, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ноги и обувь (светлые)
+  ctx.strokeStyle = '#f5dcc8';
+  ctx.lineWidth = 10;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-8, 28);
+  ctx.lineTo(-10, 42);
+  ctx.moveTo(8, 28);
+  ctx.lineTo(10, 42);
   ctx.stroke();
 
-  // 3. ТУФЕЛЬКИ (розовые)
-  ctx.fillStyle='#FFB6C1';
+  ctx.strokeStyle = '#f0e0d0';
+  ctx.lineWidth = 8;
   ctx.beginPath();
-  ctx.ellipse(-13, 46, 9, 5, 0, 0, Math.PI*2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(13, 46, 9, 5, 0, 0, Math.PI*2);
-  ctx.fill();
+  ctx.moveTo(-13, 43);
+  ctx.lineTo(-3, 43);
+  ctx.moveTo(3, 43);
+  ctx.lineTo(13, 43);
+  ctx.stroke();
 
-  // 4. ПЛАТЬЕ (розовое)
-  ctx.fillStyle='#F4A7B8';
+  // Платье (светлое)
+  ctx.fillStyle = '#faf0e6';
   ctx.beginPath();
-  ctx.moveTo(-22, 0);
-  ctx.quadraticCurveTo(0, -8, 22, 0);
-  ctx.lineTo(32, 32);
-  ctx.lineTo(-32, 32);
-  ctx.closePath();
-  ctx.fill();
-  
-  ctx.fillStyle='#FCC8D6';
-  ctx.beginPath();
-  ctx.moveTo(-18, 4);
-  ctx.lineTo(18, 4);
-  ctx.lineTo(24, 26);
-  ctx.lineTo(-24, 26);
+  ctx.moveTo(-18, -2);
+  ctx.quadraticCurveTo(0, -8, 18, -2);
+  ctx.lineTo(26, 30);
+  ctx.lineTo(-26, 30);
   ctx.closePath();
   ctx.fill();
 
-  // 5. РУКИ (БЕЛЫЕ)
-  ctx.strokeStyle='#FFFFFF';
-  ctx.lineWidth=9;
+  ctx.fillStyle = '#f5e8dc';
   ctx.beginPath();
-  ctx.moveTo(-22, 6);
-  ctx.lineTo(-36, 20);
-  ctx.moveTo(22, 6);
-  ctx.lineTo(36, 18);
-  ctx.stroke();
-
-  // 6. ШЕЯ (БЕЛАЯ)
-  ctx.fillStyle='#FFFFFF';
-  ctx.fillRect(-6, -10, 12, 12);
-
-  // 7. ГОЛОВА (БЕЛАЯ) — ЭТО ГЛАВНОЕ!
-  ctx.fillStyle='#FFFFFF';
-  ctx.beginPath();
-  ctx.arc(0, -30, 26, 0, Math.PI*2);
-  ctx.fill();
-
-  // 8. УШИ (БЕЛЫЕ)
-  ctx.fillStyle='#FFFFFF';
-  ctx.beginPath();
-  ctx.arc(-24, -30, 5, 0, Math.PI*2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(24, -30, 5, 0, Math.PI*2);
-  ctx.fill();
-
-  // 9. ВОЛОСЫ (РИСУЕМ ТОЛЬКО СВЕРХУ И ПО БОКАМ, НЕ ЗАКРЫВАЯ ЛИЦО)
-  ctx.fillStyle='#8B6B4A';
-  // Верхняя часть волос
-  ctx.beginPath();
-  ctx.arc(0, -42, 34, Math.PI*0.8, Math.PI*2.2);
-  ctx.lineTo(30, -10);
-  ctx.quadraticCurveTo(15, -15, 10, -4);
-  ctx.quadraticCurveTo(0, -10, -10, -4);
-  ctx.quadraticCurveTo(-15, -15, -30, -10);
+  ctx.moveTo(-14, 2);
+  ctx.lineTo(14, 2);
+  ctx.lineTo(18, 24);
+  ctx.lineTo(-18, 24);
   ctx.closePath();
   ctx.fill();
 
-  // 10. ГЛАЗА (голубые)
-  ctx.fillStyle='#5B9BD5';
+  // Руки
+  ctx.strokeStyle = '#f5dcc8';
+  ctx.lineWidth = 8;
   ctx.beginPath();
-  ctx.arc(-9, -32, 4.5, 0, Math.PI*2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(9, -32, 4.5, 0, Math.PI*2);
-  ctx.fill();
-  
-  ctx.fillStyle='#1F2A1A';
-  ctx.beginPath();
-  ctx.arc(-9, -32, 2.5, 0, Math.PI*2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(9, -32, 2.5, 0, Math.PI*2);
-  ctx.fill();
-  
-  ctx.fillStyle='white';
-  ctx.beginPath();
-  ctx.arc(-11, -34, 1.2, 0, Math.PI*2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(7, -34, 1.2, 0, Math.PI*2);
-  ctx.fill();
-
-  // 11. РУМЯНЕЦ
-  ctx.fillStyle='rgba(255, 150, 150, 0.4)';
-  ctx.beginPath();
-  ctx.ellipse(-15, -25, 7, 4, 0, 0, Math.PI*2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(15, -25, 7, 4, 0, 0, Math.PI*2);
-  ctx.fill();
-
-  // 12. УЛЫБКА
-  ctx.strokeStyle='#C06A6A';
-  ctx.lineWidth=2.5;
-  ctx.beginPath();
-  ctx.arc(0, -22, 7, 0.15, Math.PI-0.15);
+  ctx.moveTo(-17, 6);
+  ctx.lineTo(-28, 18);
+  ctx.moveTo(17, 6);
+  ctx.lineTo(28, 17);
   ctx.stroke();
 
-  // 13. БАНТИК
-  ctx.fillStyle='#FF6B8A';
+  // Шея
+  ctx.fillStyle = '#f5dcc8';
+  ctx.fillRect(-4, -10, 8, 10);
+
+  // Лицо
+  ctx.fillStyle = '#f5dcc8';
   ctx.beginPath();
-  ctx.ellipse(-28, -56, 10, 5, -0.5, 0, Math.PI*2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(-14, -56, 10, 5, 0.5, 0, Math.PI*2);
-  ctx.fill();
-  ctx.fillStyle='#D94A6A';
-  ctx.beginPath();
-  ctx.arc(-21, -56, 3.5, 0, Math.PI*2);
+  ctx.arc(0, -26, 22, 0, Math.PI * 2);
   ctx.fill();
 
-  // 14. ВЕНОЧЕК
+  // Уши
+  ctx.fillStyle = '#f5dcc8';
+  ctx.beginPath();
+  ctx.arc(-20, -26, 4, 0, Math.PI * 2);
+  ctx.arc(20, -26, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Светлые волосы (длинные, пшеничные)
+  ctx.fillStyle = '#f0d8a8';
+  ctx.beginPath();
+  ctx.arc(0, -34, 28, Math.PI * 0.92, Math.PI * 2.08);
+  ctx.lineTo(22, -4);
+  ctx.quadraticCurveTo(12, -10, 10, 0);
+  ctx.quadraticCurveTo(0, -7, -9, 2);
+  ctx.quadraticCurveTo(-14, -8, -24, -2);
+  ctx.closePath();
+  ctx.fill();
+
+  // Чёлка
+  ctx.fillStyle = '#f0d8a8';
+  ctx.beginPath();
+  ctx.moveTo(-22, -32);
+  ctx.quadraticCurveTo(-14, -56, 0, -56);
+  ctx.quadraticCurveTo(18, -55, 24, -36);
+  ctx.quadraticCurveTo(13, -44, 7, -36);
+  ctx.quadraticCurveTo(2, -45, -2, -35);
+  ctx.quadraticCurveTo(-9, -44, -15, -34);
+  ctx.closePath();
+  ctx.fill();
+
+  // Боковые пряди
+  ctx.fillStyle = '#f0d8a8';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 7;
+  ctx.beginPath();
+  ctx.moveTo(-18, -42);
+  ctx.quadraticCurveTo(-26, -24, -20, -8);
+  ctx.moveTo(18, -42);
+  ctx.quadraticCurveTo(26, -24, 20, -8);
+  ctx.stroke();
+
+  // Лицо поверх (светлый тон)
+  ctx.fillStyle = '#f5dcc8';
+  ctx.beginPath();
+  ctx.arc(0, -25, 17, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Глаза (голубые)
+  ctx.fillStyle = '#5b8db8';
+  ctx.beginPath();
+  ctx.arc(-6, -26, 3.5, 0, Math.PI * 2);
+  ctx.arc(6, -26, 3.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#1a2a3a';
+  ctx.beginPath();
+  ctx.arc(-6, -25, 1.8, 0, Math.PI * 2);
+  ctx.arc(6, -25, 1.8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'white';
+  ctx.beginPath();
+  ctx.arc(-5, -27, 1.2, 0, Math.PI * 2);
+  ctx.arc(7, -27, 1.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Румянец
+  ctx.fillStyle = 'rgba(230,150,150,0.25)';
+  ctx.beginPath();
+  ctx.ellipse(-11, -20, 4, 2.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(11, -20, 4, 2.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Улыбка
+  ctx.strokeStyle = '#b07070';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.arc(0, -19, 5, 0.15, Math.PI - 0.15);
+  ctx.stroke();
+
+  // Бантик в волосах
+  ctx.fillStyle = '#f0c8b0';
+  ctx.beginPath();
+  ctx.ellipse(-24, -48, 7, 4, -0.5, 0, Math.PI * 2);
+  ctx.ellipse(-14, -48, 7, 4, 0.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#dbb090';
+  ctx.beginPath();
+  ctx.arc(-19, -48, 2.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Сачок
+  ctx.strokeStyle = '#8a7a5a';
+  ctx.lineWidth = 4.5;
+  ctx.beginPath();
+  ctx.moveTo(25, 12);
+  ctx.lineTo(54, -26);
+  ctx.stroke();
+  ctx.strokeStyle = '#e8e0d0';
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.ellipse(62, -36, 16, 12, -0.55, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(60,40,20,0.3)';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(51, -43);
+  ctx.lineTo(73, -29);
+  ctx.moveTo(52, -30);
+  ctx.lineTo(71, -43);
+  ctx.stroke();
+
+  // Цветочный венок
   const flowers = [
-    [-18, -60, '#FFB3C6'],
-    [-6, -66, '#FFE28A'],
-    [6, -66, '#C9B1FF'],
-    [18, -60, '#FFB3C6']
+    [-16, -54, '#ffd8e8'],
+    [-4, -60, '#fff2a8'],
+    [10, -56, '#d9c7ff']
   ];
   flowers.forEach(([fx, fy, c]) => {
     ctx.fillStyle = c;
     for (let k = 0; k < 5; k++) {
       const a = k * Math.PI * 2 / 5;
       ctx.beginPath();
-      ctx.arc(fx + Math.cos(a) * 5, fy + Math.sin(a) * 5, 3.5, 0, Math.PI*2);
+      ctx.arc(fx + Math.cos(a) * 5, fy + Math.sin(a) * 5, 3.5, 0, Math.PI * 2);
       ctx.fill();
     }
-    ctx.fillStyle = '#F0C85A';
+    ctx.fillStyle = '#f0c85a';
     ctx.beginPath();
-    ctx.arc(fx, fy, 2, 0, Math.PI*2);
+    ctx.arc(fx, fy, 2, 0, Math.PI * 2);
     ctx.fill();
   });
 
-  // 15. САЧОК
-  ctx.strokeStyle='#7A6542';
-  ctx.lineWidth=5;
-  ctx.beginPath();
-  ctx.moveTo(30, 12);
-  ctx.lineTo(62, -32);
-  ctx.stroke();
-  ctx.strokeStyle='#E6EADF';
-  ctx.lineWidth=4;
-  ctx.beginPath();
-  ctx.ellipse(70, -44, 23, 17, -0.5, 0, Math.PI*2);
-  ctx.stroke();
-  ctx.strokeStyle='rgba(38,53,31,0.3)';
-  ctx.lineWidth=1.5;
-  ctx.beginPath();
-  ctx.moveTo(57, -54);
-  ctx.lineTo(84, -36);
-  ctx.moveTo(59, -38);
-  ctx.lineTo(82, -54);
-  ctx.stroke();
-
-  // 16. ТАБЛИЧКА "КРИСТИНА"
-  ctx.fillStyle='#FFFDF6';
-  ctx.beginPath();
-  ctx.roundRect(-50, -98, 100, 26, 8);
-  ctx.fill();
-  ctx.strokeStyle='#8B6B4A';
-  ctx.lineWidth=2;
-  ctx.beginPath();
-  ctx.roundRect(-50, -98, 100, 26, 8);
-  ctx.stroke();
-  ctx.fillStyle='#8B6B4A';
-  ctx.font='bold 14px Arial';
-  ctx.textAlign='center';
-  ctx.textBaseline='middle';
-  ctx.fillText('Кристина', 0, -81);
+  // Имя
+  roundRect(-44, -90, 88, 24, 6, 'rgba(255,248,240,0.9)', '#6a5a4a');
+  ctx.fillStyle = '#4d3824';
+  ctx.font = 'bold 14px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('Кристина', 0, -72);
 
   ctx.restore();
 }
 
-// === ФОН ===
-function drawField() {
-  const grad = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0,'#f5d9b3');
-  grad.addColorStop(0.25,'#e8c88a');
-  grad.addColorStop(0.55,'#d4b07a');
-  grad.addColorStop(0.8,'#c49a60');
-  grad.addColorStop(1,'#b8894a');
-  ctx.fillStyle=grad;
-  ctx.fillRect(0,0,W,H);
-
-  const cacti = [
-    {x:80,y:160,s:1.2}, {x:180,y:140,s:0.9}, {x:350,y:170,s:1.1},
-    {x:500,y:145,s:0.8}, {x:660,y:155,s:1.3}, {x:780,y:150,s:0.9},
-    {x:880,y:165,s:1.0}, {x:920,y:130,s:0.7}
-  ];
-  cacti.forEach(c => {
-    ctx.fillStyle='#4a7a3a';
-    ctx.shadowColor='rgba(0,0,0,0.05)';
-    ctx.shadowBlur=8;
-    ctx.fillRect(c.x-3*c.s, c.y-50*c.s, 6*c.s, 50*c.s);
-    ctx.fillRect(c.x-20*c.s, c.y-35*c.s, 5*c.s, 18*c.s);
-    ctx.fillRect(c.x+15*c.s, c.y-30*c.s, 5*c.s, 15*c.s);
-    ctx.fillRect(c.x-22*c.s, c.y-28*c.s, 4*c.s, 12*c.s);
-    ctx.fillRect(c.x+17*c.s, c.y-25*c.s, 4*c.s, 10*c.s);
-    ctx.shadowBlur=0;
-  });
-}
-
-// === ОТРИСОВКА ===
 function draw() {
-  drawField();
-  
-  if (victory) {
-    // Хоровод
-    const radius = 130 + Math.sin(victoryTimer * 0.03) * 10;
-    for (let i = 0; i < 10; i++) {
-      const angle = (i / 10) * Math.PI * 2 + victoryTimer * 0.02;
-      const fx = playerX + Math.cos(angle) * radius;
-      const fy = playerY + Math.sin(angle) * radius * 0.5 + Math.sin(victoryTimer * 0.04 + i) * 6;
-      ctx.save();
-      ctx.translate(fx, fy);
-      ctx.fillStyle='#8B6B4A';
-      ctx.beginPath(); ctx.ellipse(0,4,22,14,0,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='#A8835A';
-      ctx.beginPath(); ctx.ellipse(0,-2,16,12,0,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='#9B7A55';
-      ctx.beginPath(); ctx.arc(0,-8,13,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='#1a1a1a';
-      ctx.beginPath(); ctx.arc(-5,-10,2,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(5,-10,2,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='white';
-      ctx.beginPath(); ctx.arc(-6,-11,0.8,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(4,-11,0.8,0,Math.PI*2); ctx.fill();
-      ctx.restore();
-    }
-    // Танцующая Кристина
-    const bounce = Math.sin(victoryTimer * 0.08) * 12;
-    const swayX = Math.sin(victoryTimer * 0.1) * 6;
-    const oldX = playerX, oldY = playerY;
-    playerX += swayX;
-    playerY += bounce;
-    drawPlayer();
-    playerX = oldX;
-    playerY = oldY;
-    victoryTimer++;
-  } else {
-    frogs.filter(Boolean).forEach(drawFrog);
-    drawPlayer();
-    if(caughtAnim>0){
-      ctx.fillStyle='rgba(255,255,200,'+(caughtAnim/30)+')';
-      ctx.font='bold 42px Arial'; ctx.textAlign='center';
-      ctx.fillText('Поймана! +1',W/2,90);
-      caughtAnim--;
-    }
+  drawDesert();
+
+  capybaras.filter(Boolean).forEach(drawCapybara);
+  drawPlayer();
+
+  if (caughtAnim > 0) {
+    ctx.fillStyle = `rgba(255,245,220,${caughtAnim / 30})`;
+    ctx.font = 'bold 44px Arial';
+    ctx.textAlign = 'center';
+    ctx.shadowColor = 'rgba(0,0,0,0.2)';
+    ctx.shadowBlur = 12;
+    ctx.fillText('🐹 Поймана! +1', W / 2, 80);
+    ctx.shadowBlur = 0;
+    caughtAnim--;
   }
 }
 
-// === УПРАВЛЕНИЕ ===
-canvas.addEventListener('mousemove', (e) => {
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = W / rect.width;
-  const scaleY = H / rect.height;
-  mouseX = (e.clientX - rect.left) * scaleX;
-  mouseY = (e.clientY - rect.top) * scaleY;
-});
+let last = performance.now();
 
-canvas.addEventListener('touchmove', (e) => {
-  e.preventDefault();
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = W / rect.width;
-  const scaleY = H / rect.height;
-  const touch = e.touches[0];
-  mouseX = (touch.clientX - rect.left) * scaleX;
-  mouseY = (touch.clientY - rect.top) * scaleY;
-}, { passive: false });
+function loop(t) {
+  const dt = Math.min(0.05, (t - last) / 1000);
+  last = t;
 
-canvas.addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = W / rect.width;
-  const scaleY = H / rect.height;
-  const touch = e.touches[0];
-  mouseX = (touch.clientX - rect.left) * scaleX;
-  mouseY = (touch.clientY - rect.top) * scaleY;
-}, { passive: false });
+  if (!activeFrog) {
+    let dx = (keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0);
+    let dy = (keys.ArrowDown ? 1 : 0) - (keys.ArrowUp ? 1 : 0);
+    if (dx || dy) {
+      const l = Math.hypot(dx, dy);
+      dx /= l;
+      dy /= l;
+      player.x = Math.max(35, Math.min(W - 35, player.x + dx * player.speed * dt));
+      player.y = Math.max(110, Math.min(H - 40, player.y + dy * player.speed * dt));
+      if (dx) player.dir = dx;
+    }
 
-canvas.addEventListener('click', (e) => {
-  if (victory || activeFrog) return;
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = W / rect.width;
-  const scaleY = H / rect.height;
-  const clickX = (e.clientX - rect.left) * scaleX;
-  const clickY = (e.clientY - rect.top) * scaleY;
-  
-  for (const f of frogs) {
-    if (f && Math.hypot(clickX - f.x, clickY - f.y) < 40) {
-      ask(f);
-      break;
+    for (const c of capybaras) {
+      if (c && Math.hypot(player.x - c.x, player.y - c.y) < 60) {
+        ask(c);
+        break;
+      }
     }
   }
-});
 
-canvas.addEventListener('touchstart', (e) => {
-  if (victory || activeFrog) return;
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = W / rect.width;
-  const scaleY = H / rect.height;
-  const touch = e.touches[0];
-  const clickX = (touch.clientX - rect.left) * scaleX;
-  const clickY = (touch.clientY - rect.top) * scaleY;
-  
-  for (const f of frogs) {
-    if (f && Math.hypot(clickX - f.x, clickY - f.y) < 40) {
-      ask(f);
-      break;
-    }
-  }
-}, { passive: true });
+  draw();
+  requestAnimationFrame(loop);
+}
 
-// === ВОПРОСЫ ===
-function ask(f) {
-  activeFrog = f;
-  const a = f.id + 1;
+function ask(c) {
+  activeFrog = c;
+  const a = c.id + 1;
   const b = selectedTable;
-  question = {a,b};
+  question = { a, b };
   document.getElementById('example').textContent = `${a} × ${b} = ?`;
   document.getElementById('answer').value = '';
   document.getElementById('message').textContent = '';
   document.getElementById('modal').classList.remove('hidden');
-  setTimeout(() => document.getElementById('answer').focus(), 100);
+  setTimeout(() => document.getElementById('answer').focus(), 120);
 }
 
 function submit() {
@@ -625,20 +711,18 @@ function submit() {
   if (val === question.a * question.b) {
     score++;
     document.getElementById('score').textContent = score + '/10';
-    const i = frogs.indexOf(activeFrog);
-    frogs[i] = null;
-    msg.textContent = 'Верно! Капибара поймана! 🎉';
-    msg.style.color = '#28743a';
+    const i = capybaras.indexOf(activeFrog);
+    capybaras[i] = null;
+    msg.textContent = '✅ Верно! Капибара поймана! 🎉';
+    msg.style.color = '#4a7a3a';
     caughtAnim = 30;
     setTimeout(() => {
       closeModal();
       if (score === 10) finishLevel();
     }, 700);
   } else {
-    const i = frogs.indexOf(activeFrog);
-    frogs[i] = spawnFrog(activeFrog.id);
-    msg.textContent = 'Неверно! Попробуй ещё раз 🐹';
-    msg.style.color = '#a33c32';
+    msg.textContent = '❌ Неверно! Попробуй ещё раз 🐹';
+    msg.style.color = '#a04030';
     setTimeout(closeModal, 900);
   }
 }
@@ -648,12 +732,18 @@ function closeModal() {
   document.getElementById('modal').classList.add('hidden');
 }
 
-document.getElementById('check').onclick = submit;
-document.getElementById('answer').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') submit();
+// Управление на телефоне
+document.querySelectorAll('#touchControls button').forEach(btn => {
+  const key = btn.dataset.key;
+  const start = e => { e.preventDefault(); keys[key] = true; };
+  const stop = e => { e.preventDefault(); keys[key] = false; };
+  btn.addEventListener('pointerdown', start);
+  btn.addEventListener('pointerup', stop);
+  btn.addEventListener('pointercancel', stop);
+  btn.addEventListener('pointerleave', stop);
 });
 
-// === ВЫБОР УРОВНЯ ===
+// Кнопки выбора таблицы
 const numberChoices = document.getElementById('numberChoices');
 for (let n = 1; n <= 10; n++) {
   const btn = document.createElement('button');
@@ -665,28 +755,24 @@ for (let n = 1; n <= 10; n++) {
 document.getElementById('nextLevel').onclick = () => {
   document.getElementById('danceScreen').classList.add('hidden');
   document.getElementById('levelScreen').classList.remove('hidden');
-  victory = false;
-  victoryTimer = 0;
 };
 
-// === ГЛАВНЫЙ ЦИКЛ ===
-function loop() {
-  const dx = mouseX - playerX;
-  const dy = mouseY - playerY;
-  const dist = Math.hypot(dx, dy);
-  if (dist > 2) {
-    const speed = Math.min(300 * 0.016, dist);
-    playerX += (dx / dist) * speed;
-    playerY += (dy / dist) * speed;
+document.addEventListener('keydown', e => {
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+    keys[e.key] = true;
+    e.preventDefault();
   }
-  playerX = Math.max(30, Math.min(W - 30, playerX));
-  playerY = Math.max(110, Math.min(H - 40, playerY));
-  
-  draw();
-  requestAnimationFrame(loop);
-}
+  if (e.key === 'Enter' && activeFrog) submit();
+});
+document.addEventListener('keyup', e => {
+  keys[e.key] = false;
+});
 
-loop();
+document.getElementById('check').onclick = submit;
+
+// Старт
+document.getElementById('game').style.visibility = 'hidden';
+requestAnimationFrame(loop);
 </script>
 </body>
 </html>
