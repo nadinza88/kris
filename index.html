@@ -91,7 +91,6 @@
     canvas { border-radius:16px; }
   }
 
-  /* Экран выбора уровня */
   .screen {
     position:fixed; inset:0; display:grid; place-items:center;
     background:rgba(20,15,8,0.6); backdrop-filter:blur(4px);
@@ -118,10 +117,7 @@
   }
   #numberChoices button:hover { background:#a8835a; }
 
-  /* Экран танца */
-  .danceCard {
-    background:rgba(255,248,235,0.95);
-  }
+  .danceCard { background:rgba(255,248,235,0.95); }
   #nextLevel {
     background:#f5d742; border:0; padding:14px 36px; border-radius:60px;
     font-size:22px; font-weight:800; color:#4a301a; cursor:pointer;
@@ -192,7 +188,6 @@ let victoryTimer = 0;
 const player = {x: W*.48, y:H*.62, speed:250, dir:1};
 document.getElementById('score').textContent = '0/10';
 
-// Показываем экран выбора уровня при старте
 document.getElementById('levelScreen').classList.remove('hidden');
 
 function spawnFrog(i=0, multiplier=1) {
@@ -233,7 +228,6 @@ function roundRect(x,y,w,h,r,fill,stroke) {
 }
 
 function drawField(){
-  // Пустынный фон
   const grad = ctx.createLinearGradient(0,0,0,H);
   grad.addColorStop(0,'#f5d9b3');
   grad.addColorStop(0.25,'#e8c88a');
@@ -243,7 +237,6 @@ function drawField(){
   ctx.fillStyle=grad;
   ctx.fillRect(0,0,W,H);
 
-  // Степные холмы
   ctx.fillStyle='#d9b87a';
   ctx.beginPath();
   ctx.moveTo(0,180);
@@ -260,7 +253,6 @@ function drawField(){
   }
   ctx.lineTo(W,0); ctx.lineTo(0,0); ctx.fill();
 
-  // Песчаные дюны
   ctx.fillStyle='rgba(220,195,150,0.3)';
   ctx.beginPath();
   ctx.moveTo(0,220);
@@ -269,7 +261,6 @@ function drawField(){
   }
   ctx.lineTo(W,0); ctx.lineTo(0,0); ctx.fill();
 
-  // Кактусы
   const cacti = [
     {x:80,y:160,s:1.2}, {x:180,y:140,s:0.9}, {x:350,y:170,s:1.1},
     {x:500,y:145,s:0.8}, {x:660,y:155,s:1.3}, {x:780,y:150,s:0.9},
@@ -287,7 +278,6 @@ function drawField(){
     ctx.shadowBlur=0;
   });
 
-  // Трава-ковыль
   for(let i=0;i<80;i++){
     const x=(i*57+13)%W, y=170+(i*43)%(H-170);
     ctx.strokeStyle=i%2?'rgba(160,130,80,0.3)':'rgba(180,155,100,0.25)';
@@ -298,7 +288,6 @@ function drawField(){
     ctx.stroke();
   }
 
-  // Камни
   for(let i=0;i<15;i++){
     const x=(i*87+31)%W, y=200+(i*53)%(H-200);
     ctx.fillStyle='rgba(140,115,80,0.25)';
@@ -307,7 +296,6 @@ function drawField(){
     ctx.fill();
   }
 
-  // Песчаная тропинка
   ctx.strokeStyle='rgba(200,170,120,0.3)';
   ctx.lineWidth=60; ctx.lineCap='round';
   ctx.beginPath();
@@ -318,7 +306,6 @@ function drawField(){
   ctx.lineWidth=35;
   ctx.stroke();
 
-  // Сухая трава
   for(let i=0;i<25;i++){
     const x=(i*93+17)%W, y=195+(i*67)%(H-200);
     ctx.fillStyle='rgba(160,135,90,0.2)';
@@ -332,7 +319,6 @@ function drawField(){
   }
 }
 
-// === РИСУЕМ КАПИБАРУ ===
 function drawFrog(f, angleOffset = 0, radius = 0, centerX = 0, centerY = 0) {
   let x = f.x, y = f.y;
   if (victory && radius > 0) {
@@ -387,7 +373,6 @@ function drawFrog(f, angleOffset = 0, radius = 0, centerX = 0, centerY = 0) {
   ctx.restore();
 }
 
-// === РИСУЕМ КРИСТИНУ (БЕЛОЕ ЛИЦО) ===
 function drawPlayer(){
   const x = player.x, y = player.y;
   ctx.save();
@@ -405,7 +390,9 @@ function drawPlayer(){
   ctx.fillStyle='rgba(0,0,0,.12)';
   ctx.beginPath(); ctx.ellipse(0,48,30,8,0,0,Math.PI*2); ctx.fill();
 
-  ctx.strokeStyle='#f5e6d6'; ctx.lineWidth=11; ctx.lineCap='round';
+  // НОГИ — БЕЛЫЕ
+  ctx.strokeStyle='#FFFFFF'; 
+  ctx.lineWidth=11; ctx.lineCap='round';
   ctx.beginPath(); ctx.moveTo(-9,28); ctx.lineTo(-12,44); ctx.moveTo(9,28); ctx.lineTo(12,44); ctx.stroke();
   ctx.fillStyle='#ffb6c1';
   ctx.beginPath(); ctx.ellipse(-12,46,8,5,0,0,Math.PI*2); ctx.fill();
@@ -418,7 +405,9 @@ function drawPlayer(){
   ctx.beginPath(); ctx.moveTo(-16,4); ctx.lineTo(16,4);
   ctx.lineTo(20,26); ctx.lineTo(-20,26); ctx.closePath(); ctx.fill();
 
-  ctx.strokeStyle='#f5e6d6'; ctx.lineWidth=9;
+  // РУКИ — БЕЛЫЕ
+  ctx.strokeStyle='#FFFFFF'; 
+  ctx.lineWidth=9;
   const armWave = victory ? Math.sin(victoryTimer * 0.12) * 12 : 0;
   ctx.beginPath(); ctx.moveTo(-20,6); ctx.lineTo(-34 + armWave*0.3,20 - Math.abs(armWave)*0.5); 
   ctx.moveTo(20,6); ctx.lineTo(34 - armWave*0.3,20 - Math.abs(armWave)*0.5); 
@@ -437,7 +426,7 @@ function drawPlayer(){
   ctx.beginPath(); ctx.arc(-22,-28,5,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(22,-28,5,0,Math.PI*2); ctx.fill();
 
-  // Волосы (светло-каштановые)
+  // Волосы (каштановые)
   ctx.fillStyle='#8B6B4A';
   ctx.beginPath();
   ctx.arc(0,-36,30,Math.PI*0.85,Math.PI*2.15);
@@ -478,7 +467,7 @@ function drawPlayer(){
   ctx.beginPath(); ctx.arc(-10,-32,1.2,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(6,-32,1.2,0,Math.PI*2); ctx.fill();
 
-  // Румянец (розовый)
+  // Румянец
   ctx.fillStyle='rgba(255,180,180,0.5)';
   ctx.beginPath(); ctx.ellipse(-13,-24,7,4,0,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(13,-24,7,4,0,0,Math.PI*2); ctx.fill();
@@ -624,7 +613,6 @@ function submit(){
 
 function closeModal(){ activeFrog=null; document.getElementById('modal').classList.add('hidden'); }
 
-// Кнопки для телефона
 document.querySelectorAll('#touchControls button').forEach(btn => {
   const key = btn.dataset.key;
   const start = e => { e.preventDefault(); keys[key] = true; };
@@ -635,7 +623,6 @@ document.querySelectorAll('#touchControls button').forEach(btn => {
   btn.addEventListener('pointerleave', stop);
 });
 
-// === ЭКРАН ВЫБОРА УРОВНЯ ===
 const numberChoices = document.getElementById('numberChoices');
 for(let n=1;n<=10;n++){
   const btn=document.createElement('button');
