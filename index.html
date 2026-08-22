@@ -627,4 +627,53 @@ function submit(){
     caughtAnim=30;
     setTimeout(() => {
       closeModal();
-      if
+      if(score === 10) finishLevel();
+    },700);
+  } else {
+    msg.textContent='Неверно! Попробуй ещё раз 🐹';
+    msg.style.color='#a33c32';
+    setTimeout(closeModal,900);
+  }
+}
+
+function closeModal(){ activeFrog=null; document.getElementById('modal').classList.add('hidden'); }
+
+// Кнопки для телефона
+document.querySelectorAll('#touchControls button').forEach(btn => {
+  const key = btn.dataset.key;
+  const start = e => { e.preventDefault(); keys[key] = true; };
+  const stop = e => { e.preventDefault(); keys[key] = false; };
+  btn.addEventListener('pointerdown', start);
+  btn.addEventListener('pointerup', stop);
+  btn.addEventListener('pointercancel', stop);
+  btn.addEventListener('pointerleave', stop);
+});
+
+// === ЭКРАН ВЫБОРА УРОВНЯ ===
+document.getElementById('game').style.visibility='visible';
+const numberChoices = document.getElementById('numberChoices');
+for(let n=1;n<=10;n++){
+  const btn=document.createElement('button');
+  btn.textContent='×'+n;
+  btn.onclick=()=>startLevel(n);
+  numberChoices.appendChild(btn);
+}
+
+document.getElementById('nextLevel').onclick=()=>{
+  document.getElementById('danceScreen').classList.add('hidden');
+  document.getElementById('levelScreen').classList.remove('hidden');
+  victory = false;
+  victoryTimer = 0;
+};
+
+document.addEventListener('keydown',e=>{
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){ keys[e.key]=true; e.preventDefault(); }
+  if(e.key==='Enter' && activeFrog) submit();
+});
+document.addEventListener('keyup',e=>keys[e.key]=false);
+document.getElementById('check').onclick=submit;
+
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
