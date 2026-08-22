@@ -398,6 +398,7 @@ function drawPlayer(){
   ctx.beginPath(); ctx.ellipse(-12,46,8,5,0,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(12,46,8,5,0,0,Math.PI*2); ctx.fill();
 
+  // Платье
   ctx.fillStyle='#f7a8b8';
   ctx.beginPath(); ctx.moveTo(-20,0); ctx.quadraticCurveTo(0,-8,20,0);
   ctx.lineTo(30,32); ctx.lineTo(-30,32); ctx.closePath(); ctx.fill();
@@ -417,7 +418,7 @@ function drawPlayer(){
   ctx.fillStyle='#FFFFFF'; 
   ctx.fillRect(-5,-9,10,10);
 
-  // ГОЛОВА — БЕЛАЯ
+  // ГОЛОВА — БЕЛАЯ (рисуем до волос!)
   ctx.fillStyle='#FFFFFF';
   ctx.beginPath(); ctx.arc(0,-28,24,0,Math.PI*2); ctx.fill();
 
@@ -426,23 +427,24 @@ function drawPlayer(){
   ctx.beginPath(); ctx.arc(-22,-28,5,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(22,-28,5,0,Math.PI*2); ctx.fill();
 
-  // Волосы (каштановые)
+  // ВОЛОСЫ (рисуем ПОВЕРХ лица, но только по краям)
   ctx.fillStyle='#8B6B4A';
   ctx.beginPath();
-  ctx.arc(0,-36,30,Math.PI*0.85,Math.PI*2.15);
-  ctx.lineTo(26,-6);
-  ctx.quadraticCurveTo(13,-12,10,0);
+  ctx.arc(0,-38,32,Math.PI*0.85,Math.PI*2.15);
+  ctx.lineTo(28,-6);
+  ctx.quadraticCurveTo(14,-12,10,0);
   ctx.quadraticCurveTo(0,-8,-10,0);
-  ctx.quadraticCurveTo(-13,-12,-26,-6);
+  ctx.quadraticCurveTo(-14,-12,-28,-6);
   ctx.closePath(); ctx.fill();
 
-  // Чёлка
+  // Чёлка — только сверху, не закрывает лицо
+  ctx.fillStyle='#8B6B4A';
   ctx.beginPath();
-  ctx.moveTo(-24,-32);
-  ctx.quadraticCurveTo(-16,-60,0,-60);
-  ctx.quadraticCurveTo(18,-58,26,-36);
+  ctx.moveTo(-24,-34);
+  ctx.quadraticCurveTo(-16,-58,0,-58);
+  ctx.quadraticCurveTo(18,-56,26,-36);
   ctx.quadraticCurveTo(14,-46,8,-36);
-  ctx.quadraticCurveTo(2,-50,-4,-36);
+  ctx.quadraticCurveTo(2,-48,-4,-36);
   ctx.quadraticCurveTo(-10,-46,-18,-34);
   ctx.closePath(); ctx.fill();
 
@@ -456,7 +458,7 @@ function drawPlayer(){
   ctx.quadraticCurveTo(32,-24 - hairWave*0.5,24,-8 - hairWave*0.3);
   ctx.stroke();
 
-  // Глаза (голубые)
+  // Глаза (голубые) — рисуем ПОВЕРХ волос
   ctx.fillStyle='#5b9bd5';
   ctx.beginPath(); ctx.arc(-8,-30,4,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(8,-30,4,0,Math.PI*2); ctx.fill();
