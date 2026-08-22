@@ -387,7 +387,7 @@ function drawFrog(f, angleOffset = 0, radius = 0, centerX = 0, centerY = 0) {
   ctx.restore();
 }
 
-// === РИСУЕМ КРИСТИНУ ===
+// === РИСУЕМ КРИСТИНУ (БЕЛОЕ ЛИЦО) ===
 function drawPlayer(){
   const x = player.x, y = player.y;
   ctx.save();
@@ -424,15 +424,20 @@ function drawPlayer(){
   ctx.moveTo(20,6); ctx.lineTo(34 - armWave*0.3,20 - Math.abs(armWave)*0.5); 
   ctx.stroke();
 
-  ctx.fillStyle='#fcf4ec'; ctx.fillRect(-5,-9,10,10);
+  // ШЕЯ — БЕЛАЯ
+  ctx.fillStyle='#FFFFFF'; 
+  ctx.fillRect(-5,-9,10,10);
 
-  ctx.fillStyle='#fcf4ec';
+  // ГОЛОВА — БЕЛАЯ
+  ctx.fillStyle='#FFFFFF';
   ctx.beginPath(); ctx.arc(0,-28,24,0,Math.PI*2); ctx.fill();
 
-  ctx.fillStyle='#fcf4ec';
+  // УШИ — БЕЛЫЕ
+  ctx.fillStyle='#FFFFFF';
   ctx.beginPath(); ctx.arc(-22,-28,5,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(22,-28,5,0,Math.PI*2); ctx.fill();
 
+  // Волосы (светло-каштановые)
   ctx.fillStyle='#8B6B4A';
   ctx.beginPath();
   ctx.arc(0,-36,30,Math.PI*0.85,Math.PI*2.15);
@@ -442,6 +447,7 @@ function drawPlayer(){
   ctx.quadraticCurveTo(-13,-12,-26,-6);
   ctx.closePath(); ctx.fill();
 
+  // Чёлка
   ctx.beginPath();
   ctx.moveTo(-24,-32);
   ctx.quadraticCurveTo(-16,-60,0,-60);
@@ -451,6 +457,7 @@ function drawPlayer(){
   ctx.quadraticCurveTo(-10,-46,-18,-34);
   ctx.closePath(); ctx.fill();
 
+  // Боковые пряди
   ctx.fillStyle='#8B6B4A';
   ctx.lineWidth=8; ctx.lineCap='round';
   const hairWave = victory ? Math.sin(victoryTimer * 0.09) * 4 : 0;
@@ -460,6 +467,7 @@ function drawPlayer(){
   ctx.quadraticCurveTo(32,-24 - hairWave*0.5,24,-8 - hairWave*0.3);
   ctx.stroke();
 
+  // Глаза (голубые)
   ctx.fillStyle='#5b9bd5';
   ctx.beginPath(); ctx.arc(-8,-30,4,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(8,-30,4,0,Math.PI*2); ctx.fill();
@@ -470,20 +478,24 @@ function drawPlayer(){
   ctx.beginPath(); ctx.arc(-10,-32,1.2,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(6,-32,1.2,0,Math.PI*2); ctx.fill();
 
+  // Румянец (розовый)
   ctx.fillStyle='rgba(255,180,180,0.5)';
   ctx.beginPath(); ctx.ellipse(-13,-24,7,4,0,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(13,-24,7,4,0,0,Math.PI*2); ctx.fill();
 
+  // Улыбка
   const smileW = victory ? 8 : 6;
   ctx.strokeStyle='#c06a6a'; ctx.lineWidth=2;
   ctx.beginPath(); ctx.arc(0,-21,smileW,0.15,Math.PI-0.15); ctx.stroke();
 
+  // Бантик
   ctx.fillStyle='#ff6b8a';
   ctx.beginPath(); ctx.ellipse(-26,-52,9,5,-0.5,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(-14,-52,9,5,0.5,0,Math.PI*2); ctx.fill();
   ctx.fillStyle='#d94a6a';
   ctx.beginPath(); ctx.arc(-20,-52,3,0,Math.PI*2); ctx.fill();
 
+  // Веночек
   const flowers=[ [-16,-56,'#ffb3c6'], [-4,-62,'#ffe28a'], [8,-58,'#c9b1ff'], [18,-52,'#ffb3c6'] ];
   flowers.forEach(([fx,fy,c])=>{
     ctx.fillStyle=c;
@@ -492,6 +504,7 @@ function drawPlayer(){
     ctx.fillStyle='#f0c85a'; ctx.beginPath(); ctx.arc(fx,fy,2,0,Math.PI*2); ctx.fill();
   });
 
+  // Сачок
   if (!victory) {
     ctx.strokeStyle='#7a6542'; ctx.lineWidth=5;
     ctx.beginPath(); ctx.moveTo(28,12); ctx.lineTo(60,-30); ctx.stroke();
@@ -508,6 +521,7 @@ function drawPlayer(){
     ctx.beginPath(); ctx.ellipse(58,-60 + netWave*0.5,22,16,-0.8 + Math.sin(victoryTimer*0.05)*0.1,0,Math.PI*2); ctx.stroke();
   }
 
+  // Табличка "Кристина"
   roundRect(-48,-94,96,26,8,'#fffdf6','#8B6B4A');
   ctx.fillStyle='#8B6B4A'; ctx.font='bold 14px Arial'; ctx.textAlign='center';
   ctx.fillText('Кристина',0,-76);
