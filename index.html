@@ -125,11 +125,11 @@
     margin: 24px 0;
     min-height: 130px;
   }
-  .dancer { font-size: 68px; }
+  .dancer { font-size: 72px; }
   .capy {
     display: inline-block;
     animation: danceWobble 1.0s infinite alternate ease-in-out;
-    font-size: 52px;
+    font-size: 56px;
   }
   .capy:nth-child(2) { animation-delay: 0.0s; }
   .capy:nth-child(3) { animation-delay: 0.15s; }
@@ -187,8 +187,8 @@
     #levelScreen p { font-size: 16px; }
     #numberChoices button { width: 54px; height: 54px; font-size: 22px; }
     #danceScene { font-size: 40px; gap: 12px; }
-    .dancer { font-size: 56px; }
-    .capy { font-size: 44px; }
+    .dancer { font-size: 60px; }
+    .capy { font-size: 48px; }
     #danceScreen h1 { font-size: 22px; }
     #danceScreen p { font-size: 16px; }
     #nextLevel { font-size: 19px; padding: 14px 32px; }
@@ -261,8 +261,11 @@ const keys = {};
 let score = 0, activeFrog = null, question = null, caughtAnim = 0;
 let selectedTable = null;
 let capybaras = [];
-const player = { x: W * 0.48, y: H * 0.62, speed: 260, dir: 1 };
+const player = { x: W * 0.48, y: H * 0.62, speed: 240, dir: 1 };
 document.getElementById('score').textContent = '0/10';
+
+// Увеличенный масштаб для Кристины и капибар
+const SCALE = 1.5;
 
 function spawnCapybara(i = 0, multiplier = 1) {
   let x, y;
@@ -271,7 +274,7 @@ function spawnCapybara(i = 0, multiplier = 1) {
     x = 60 + Math.random() * (W - 120);
     y = 140 + Math.random() * (H - 190);
     attempts++;
-  } while (Math.hypot(x - player.x, y - player.y) < 160 && attempts < 50);
+  } while (Math.hypot(x - player.x, y - player.y) < 180 && attempts < 50);
   return { x, y, phase: Math.random() * Math.PI * 2, id: i, multiplier };
 }
 
@@ -303,14 +306,12 @@ function roundRect(x, y, w, h, r, fill, stroke) {
 }
 
 function drawDesert() {
-  // Небо
   const grad = ctx.createLinearGradient(0, 0, 0, H * 0.5);
   grad.addColorStop(0, '#f7d9aa');
   grad.addColorStop(1, '#f5e6c8');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H * 0.55);
 
-  // Дюны
   ctx.fillStyle = '#e2c9a8';
   ctx.beginPath();
   ctx.moveTo(0, H * 0.48);
@@ -341,7 +342,6 @@ function drawDesert() {
   ctx.lineTo(0, H);
   ctx.fill();
 
-  // Кактусы и кустики
   for (let i = 0; i < 8; i++) {
     let x = (i * 137 + 43) % W;
     let y = H * 0.55 + (i * 73) % (H * 0.35);
@@ -359,7 +359,6 @@ function drawDesert() {
     ctx.fill();
   }
 
-  // Камешки
   for (let i = 0; i < 20; i++) {
     let x = (i * 97 + 13) % W;
     let y = H * 0.55 + (i * 53) % (H * 0.38);
@@ -369,7 +368,6 @@ function drawDesert() {
     ctx.fill();
   }
 
-  // Следы на песке
   ctx.strokeStyle = 'rgba(160,130,100,0.2)';
   ctx.lineWidth = 2;
   for (let i = 0; i < 12; i++) {
@@ -386,14 +384,13 @@ function drawCapybara(c) {
   const x = c.x, y = c.y + bob;
   ctx.save();
   ctx.translate(x, y);
+  ctx.scale(SCALE, SCALE);
 
-  // Тень
   ctx.fillStyle = 'rgba(60,40,20,0.15)';
   ctx.beginPath();
   ctx.ellipse(0, 16, 22, 7, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Тело
   ctx.fillStyle = '#8a7a5a';
   ctx.beginPath();
   ctx.ellipse(0, 2, 24, 14, 0, 0, Math.PI * 2);
@@ -403,13 +400,11 @@ function drawCapybara(c) {
   ctx.ellipse(0, -2, 20, 12, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Голова
   ctx.fillStyle = '#9a8a6a';
   ctx.beginPath();
   ctx.ellipse(0, -12, 14, 11, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Уши
   ctx.fillStyle = '#8a7a5a';
   ctx.beginPath();
   ctx.ellipse(-9, -18, 4, 3, -0.2, 0, Math.PI * 2);
@@ -418,7 +413,6 @@ function drawCapybara(c) {
   ctx.ellipse(9, -18, 4, 3, 0.2, 0, Math.PI * 2);
   ctx.fill();
 
-  // Глаза
   ctx.fillStyle = '#1a1a1a';
   ctx.beginPath();
   ctx.arc(-5, -13, 2.2, 0, Math.PI * 2);
@@ -430,20 +424,17 @@ function drawCapybara(c) {
   ctx.arc(5.5, -14, 1, 0, Math.PI * 2);
   ctx.fill();
 
-  // Нос
   ctx.fillStyle = '#5a4a3a';
   ctx.beginPath();
   ctx.ellipse(0, -8, 3, 2, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Улыбка
   ctx.strokeStyle = '#4a3a2a';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.arc(0, -6, 4, 0.1, Math.PI - 0.1);
   ctx.stroke();
 
-  // Лапки
   ctx.fillStyle = '#8a7a5a';
   ctx.beginPath();
   ctx.ellipse(-12, 8, 4, 3, 0, 0, Math.PI * 2);
@@ -459,14 +450,13 @@ function drawPlayer() {
   const x = player.x, y = player.y;
   ctx.save();
   ctx.translate(x, y);
+  ctx.scale(SCALE, SCALE);
 
-  // Тень
   ctx.fillStyle = 'rgba(60,40,20,0.2)';
   ctx.beginPath();
   ctx.ellipse(0, 44, 26, 7, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Ноги
   ctx.strokeStyle = '#f5dcc8';
   ctx.lineWidth = 10;
   ctx.lineCap = 'round';
@@ -486,7 +476,6 @@ function drawPlayer() {
   ctx.lineTo(13, 43);
   ctx.stroke();
 
-  // Платье
   ctx.fillStyle = '#faf0e6';
   ctx.beginPath();
   ctx.moveTo(-18, -2);
@@ -505,7 +494,6 @@ function drawPlayer() {
   ctx.closePath();
   ctx.fill();
 
-  // Руки
   ctx.strokeStyle = '#f5dcc8';
   ctx.lineWidth = 8;
   ctx.beginPath();
@@ -515,24 +503,20 @@ function drawPlayer() {
   ctx.lineTo(28, 17);
   ctx.stroke();
 
-  // Шея
   ctx.fillStyle = '#f5dcc8';
   ctx.fillRect(-4, -10, 8, 10);
 
-  // Лицо
   ctx.fillStyle = '#f5dcc8';
   ctx.beginPath();
   ctx.arc(0, -26, 22, 0, Math.PI * 2);
   ctx.fill();
 
-  // Уши
   ctx.fillStyle = '#f5dcc8';
   ctx.beginPath();
   ctx.arc(-20, -26, 4, 0, Math.PI * 2);
   ctx.arc(20, -26, 4, 0, Math.PI * 2);
   ctx.fill();
 
-  // Волосы (светлые)
   ctx.fillStyle = '#f0d8a8';
   ctx.beginPath();
   ctx.arc(0, -34, 28, Math.PI * 0.92, Math.PI * 2.08);
@@ -543,7 +527,6 @@ function drawPlayer() {
   ctx.closePath();
   ctx.fill();
 
-  // Чёлка
   ctx.fillStyle = '#f0d8a8';
   ctx.beginPath();
   ctx.moveTo(-22, -32);
@@ -555,7 +538,6 @@ function drawPlayer() {
   ctx.closePath();
   ctx.fill();
 
-  // Боковые пряди
   ctx.fillStyle = '#f0d8a8';
   ctx.lineCap = 'round';
   ctx.lineWidth = 7;
@@ -566,13 +548,11 @@ function drawPlayer() {
   ctx.quadraticCurveTo(26, -24, 20, -8);
   ctx.stroke();
 
-  // Лицо поверх
   ctx.fillStyle = '#f5dcc8';
   ctx.beginPath();
   ctx.arc(0, -25, 17, 0, Math.PI * 2);
   ctx.fill();
 
-  // Глаза
   ctx.fillStyle = '#5b8db8';
   ctx.beginPath();
   ctx.arc(-6, -26, 3.5, 0, Math.PI * 2);
@@ -589,21 +569,18 @@ function drawPlayer() {
   ctx.arc(7, -27, 1.2, 0, Math.PI * 2);
   ctx.fill();
 
-  // Румянец
   ctx.fillStyle = 'rgba(230,150,150,0.25)';
   ctx.beginPath();
   ctx.ellipse(-11, -20, 4, 2.5, 0, 0, Math.PI * 2);
   ctx.ellipse(11, -20, 4, 2.5, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Улыбка
   ctx.strokeStyle = '#b07070';
   ctx.lineWidth = 1.8;
   ctx.beginPath();
   ctx.arc(0, -19, 5, 0.15, Math.PI - 0.15);
   ctx.stroke();
 
-  // Бантик
   ctx.fillStyle = '#f0c8b0';
   ctx.beginPath();
   ctx.ellipse(-24, -48, 7, 4, -0.5, 0, Math.PI * 2);
@@ -614,7 +591,6 @@ function drawPlayer() {
   ctx.arc(-19, -48, 2.2, 0, Math.PI * 2);
   ctx.fill();
 
-  // Сачок
   ctx.strokeStyle = '#8a7a5a';
   ctx.lineWidth = 4.5;
   ctx.beginPath();
@@ -635,7 +611,6 @@ function drawPlayer() {
   ctx.lineTo(71, -43);
   ctx.stroke();
 
-  // Цветочный венок
   const flowers = [
     [-16, -54, '#ffd8e8'],
     [-4, -60, '#fff2a8'],
@@ -655,7 +630,6 @@ function drawPlayer() {
     ctx.fill();
   });
 
-  // Имя
   roundRect(-44, -90, 88, 24, 6, 'rgba(255,248,240,0.9)', '#6a5a4a');
   ctx.fillStyle = '#4d3824';
   ctx.font = 'bold 14px Arial';
@@ -696,13 +670,13 @@ function loop(t) {
       const l = Math.hypot(dx, dy);
       dx /= l;
       dy /= l;
-      player.x = Math.max(35, Math.min(W - 35, player.x + dx * player.speed * dt));
-      player.y = Math.max(110, Math.min(H - 40, player.y + dy * player.speed * dt));
+      player.x = Math.max(45, Math.min(W - 45, player.x + dx * player.speed * dt));
+      player.y = Math.max(120, Math.min(H - 50, player.y + dy * player.speed * dt));
       if (dx) player.dir = dx;
     }
 
     for (const c of capybaras) {
-      if (c && Math.hypot(player.x - c.x, player.y - c.y) < 60) {
+      if (c && Math.hypot(player.x - c.x, player.y - c.y) < 75) {
         ask(c);
         break;
       }
@@ -752,7 +726,6 @@ function closeModal() {
   document.getElementById('modal').classList.add('hidden');
 }
 
-// Телефонное управление
 document.querySelectorAll('#touchControls button').forEach(btn => {
   const key = btn.dataset.key;
   const start = e => { e.preventDefault(); keys[key] = true; };
@@ -763,7 +736,6 @@ document.querySelectorAll('#touchControls button').forEach(btn => {
   btn.addEventListener('pointerleave', stop);
 });
 
-// Кнопки таблицы
 const numberChoices = document.getElementById('numberChoices');
 for (let n = 1; n <= 10; n++) {
   const btn = document.createElement('button');
@@ -790,7 +762,6 @@ document.addEventListener('keyup', e => {
 
 document.getElementById('check').onclick = submit;
 
-// Старт
 document.getElementById('game').style.visibility = 'hidden';
 requestAnimationFrame(loop);
 </script>
