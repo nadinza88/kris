@@ -116,31 +116,44 @@
   #danceScreen h1 { font-size: 26px; color: #4d3824; }
   #danceScreen p { font-size: 18px; color: #5a3e2b; }
   #danceScene {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
+    position: relative;
+    width: 260px;
+    height: 260px;
+    margin: 20px auto;
+  }
+  #danceScene .dancer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 72px;
+    z-index: 5;
+  }
+  .capy-circle {
+    position: absolute;
     font-size: 48px;
-    margin: 24px 0;
-    min-height: 130px;
+    animation: circleDance 6s linear infinite;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .dancer { font-size: 72px; }
-  .capy {
-    display: inline-block;
-    animation: danceWobble 1.0s infinite alternate ease-in-out;
-    font-size: 56px;
+  .capy-circle:nth-child(2) { animation-delay: 0s; }
+  .capy-circle:nth-child(3) { animation-delay: 0.86s; }
+  .capy-circle:nth-child(4) { animation-delay: 1.72s; }
+  .capy-circle:nth-child(5) { animation-delay: 2.58s; }
+  .capy-circle:nth-child(6) { animation-delay: 3.44s; }
+  .capy-circle:nth-child(7) { animation-delay: 4.30s; }
+
+  @keyframes circleDance {
+    0% { transform: rotate(0deg) translateX(110px) rotate(0deg) scale(1); }
+    25% { transform: rotate(90deg) translateX(110px) rotate(-90deg) scale(1.15); }
+    50% { transform: rotate(180deg) translateX(110px) rotate(-180deg) scale(1); }
+    75% { transform: rotate(270deg) translateX(110px) rotate(-270deg) scale(1.15); }
+    100% { transform: rotate(360deg) translateX(110px) rotate(-360deg) scale(1); }
   }
-  .capy:nth-child(2) { animation-delay: 0.0s; }
-  .capy:nth-child(3) { animation-delay: 0.15s; }
-  .capy:nth-child(4) { animation-delay: 0.30s; }
-  .capy:nth-child(5) { animation-delay: 0.45s; }
-  .capy:nth-child(6) { animation-delay: 0.60s; }
-  .capy:nth-child(7) { animation-delay: 0.75s; }
-  @keyframes danceWobble {
-    0% { transform: translateY(0) rotate(-5deg) scale(1); }
-    100% { transform: translateY(-20px) rotate(5deg) scale(1.1); }
-  }
+
   #nextLevel {
     margin-top: 20px; padding: 16px 44px; border: 0; border-radius: 40px;
     background: #7b5f42; color: #fff; font-size: 22px; font-weight: 800;
@@ -186,9 +199,16 @@
     #levelScreen h1 { font-size: 22px; }
     #levelScreen p { font-size: 16px; }
     #numberChoices button { width: 54px; height: 54px; font-size: 22px; }
-    #danceScene { font-size: 40px; gap: 12px; }
-    .dancer { font-size: 60px; }
-    .capy { font-size: 48px; }
+    #danceScene { width: 200px; height: 200px; }
+    #danceScene .dancer { font-size: 56px; }
+    .capy-circle { font-size: 36px; width: 36px; height: 36px; }
+    @keyframes circleDance {
+      0% { transform: rotate(0deg) translateX(85px) rotate(0deg); }
+      25% { transform: rotate(90deg) translateX(85px) rotate(-90deg); }
+      50% { transform: rotate(180deg) translateX(85px) rotate(-180deg); }
+      75% { transform: rotate(270deg) translateX(85px) rotate(-270deg); }
+      100% { transform: rotate(360deg) translateX(85px) rotate(-360deg); }
+    }
     #danceScreen h1 { font-size: 22px; }
     #danceScreen p { font-size: 16px; }
     #nextLevel { font-size: 19px; padding: 14px 32px; }
@@ -219,12 +239,12 @@
     <div class="screenCard">
       <div id="danceScene">
         <span class="dancer">👩🏻</span>
-        <span class="capy">🐹</span>
-        <span class="capy">🐹</span>
-        <span class="capy">🐹</span>
-        <span class="capy">🐹</span>
-        <span class="capy">🐹</span>
-        <span class="capy">🐹</span>
+        <span class="capy-circle">🐹</span>
+        <span class="capy-circle">🐹</span>
+        <span class="capy-circle">🐹</span>
+        <span class="capy-circle">🐹</span>
+        <span class="capy-circle">🐹</span>
+        <span class="capy-circle">🐹</span>
       </div>
       <h1>🎉 Все капибары пойманы!</h1>
       <p>Кристина танцует, а капибары водят хоровод!</p>
@@ -264,7 +284,6 @@ let capybaras = [];
 const player = { x: W * 0.48, y: H * 0.62, speed: 240, dir: 1 };
 document.getElementById('score').textContent = '0/10';
 
-// Увеличенный масштаб для Кристины и капибар
 const SCALE = 1.5;
 
 function spawnCapybara(i = 0, multiplier = 1) {
